@@ -3,6 +3,7 @@ import multer from 'multer';
 import commandLineArgs, { OptionDefinition } from 'command-line-args';
 import { check, validationResult, param } from 'express-validator';
 import path from "path";
+import fetch from 'node-fetch';
 const upload = multer({ dest: '../uploads/' }); // Pour les données form-data et multipart form data
 
 const app = express();
@@ -33,11 +34,34 @@ app.get('/api/addition', upload.none(), [check('a').isNumeric(), check('b').isNu
 });
 
 //Define HTTP Proxy
-app.get('/proxy', upload.none(), [check('url').isText(), (req, res) => {
+app.get('/proxy', upload.none(), [check('url').isString()],async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         console.log("on veut", req.body.url);
-        res.status(200).send( `WIP` );
+        try{
+            const R = await fetch(req.body.url);
+            console.log('banco');
+            res.status(R.status).send(await R.text());
+        }catch(err){
+            res.status(500).json({proxyError:err});
+        }
+    } else {
+        res.status(422).json({ errors: errors.array()});
+    }
+});
+
+//Define TMDB interface
+app.get('/tmdb/search', upload.none(), [check('url').isString()],async (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        console.log("on veut", req.body.url);
+        try{
+            const R = await fetch(req.body.url);
+            console.log('banco');
+            res.status(R.status).send(await R.text());
+        }catch(err){
+            res.status(500).json({proxyError:err});
+        }
     } else {
         res.status(422).json({ errors: errors.array()});
     }
