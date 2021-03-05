@@ -51,7 +51,7 @@ app.get('/proxy', upload.none(), [check('url').isString()],async (req, res) => {
 });
 
 //Define TMDB interface
-app.get('/tmdb/search', upload.none(), [check('url').isString()],async (req, res) => {
+app.get('/tmdb/search', upload.none(), [check('query').isString()],async (req, res) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         console.log("on veut", req.body.url);
