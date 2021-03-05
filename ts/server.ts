@@ -55,9 +55,13 @@ app.get('/tmdb/search', upload.none(), [check('url').isString()],async (req, res
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         console.log("on veut", req.body.url);
+        const query = req.body.query ?? req.params.query;
         try{
-            const R = await fetch(req.body.url);
-            console.log('banco');
+            const key = "9e0b7e444f3a564140d56af2346a8815"
+            const addr = `https://api.themoviedb.org/3/search/movie?api_key=${key}&query=${encodeURIComponent(query)}`;
+
+            const R = await fetch(addr);
+            console.log('ok');
             res.status(R.status).send(await R.text());
         }catch(err){
             res.status(500).json({proxyError:err});
