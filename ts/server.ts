@@ -32,6 +32,18 @@ app.get('/api/addition', upload.none(), [check('a').isNumeric(), check('b').isNu
     }
 });
 
+//Define HTTP Proxy
+app.get('/proxy', upload.none(), [check('url').isText(), (req, res) => {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+        console.log("on veut", req.body.url);
+        res.status(200).send( `WIP` );
+    } else {
+        res.status(422).json({ errors: errors.array()});
+    }
+});
+
+
 app.post('/api/upload', upload.none() );
 
 app.get('/', (req, res) => {
